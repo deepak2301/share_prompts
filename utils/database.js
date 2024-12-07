@@ -9,7 +9,6 @@ export const connectToDB = async () => {
     console.log("MongoDB is already Connected!");
     return;
   }
-
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       dbName: "share_prompt",
@@ -17,7 +16,7 @@ export const connectToDB = async () => {
       useUnifiedTopology: true,
     });
     isConnected = true;
-    console.log("MongoDB Connected");
+    console.log("MongoDb Connected");
   } catch (error) {
     console.log(error);
   }

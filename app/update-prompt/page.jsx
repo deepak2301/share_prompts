@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
 import Form from "@components/Form";
 
+// EditPrompt component
 const EditPrompt = () => {
   const router = useRouter();
-
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
 
   const [submitting, setSubmitting] = useState(false); // Tracks if the form is being submitted
   const [post, setPost] = useState({
-    // Form data for the prompt
     prompt: "", // The main text input
     tag: "", // The category or tag for the prompt
   });
 
+  // Fetch the prompt details from the server
   useEffect(() => {
     const getPromptDetails = async () => {
       const response = await fetch(`/api/prompt/${promptId}`);
@@ -30,31 +29,30 @@ const EditPrompt = () => {
     if (promptId) getPromptDetails();
   }, [promptId]);
 
+  // Handle updating the prompt
   const updatePrompt = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setSubmitting(true); // Indicate the form is being submitted
-    if (!promptId) return alert("prompt not found!");
+    e.preventDefault();
+    setSubmitting(true);
+    if (!promptId) return alert("Prompt not found!");
     try {
-      // Send form data to the API
       const response = await fetch(`/api/prompt/${promptId}`, {
-        method: "PATCH", // HTTP method
+        method: "PATCH",
         body: JSON.stringify({
-          prompt: post.prompt, // User's prompt
-          tag: post.tag, // Tag/category of the prompt
+          prompt: post.prompt,
+          tag: post.tag,
         }),
         headers: {
-          "Content-Type": "application/json", // Ensure the server interprets the body correctly
+          "Content-Type": "application/json",
         },
       });
 
-      // Redirect to home page if the request is successful
       if (response.ok) {
         router.push("/");
       }
     } catch (error) {
-      console.log(error); // Log errors for debugging
+      console.log(error);
     } finally {
-      setSubmitting(false); // Reset submitting state
+      setSubmitting(false);
     }
   };
 
@@ -69,4 +67,11 @@ const EditPrompt = () => {
   );
 };
 
-export default EditPrompt;
+// Wrapper to add Suspense boundary
+const EditPromptWithSuspense = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <EditPrompt />
+  </Suspense>
+);
+
+export default EditPromptWithSuspense;

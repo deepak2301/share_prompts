@@ -11,7 +11,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
       {/* Iterate over the 'data' array and render a PromptCard for each post */}
       {data.map((post) => (
         <PromptCard
-          key={post.id} // Use a unique key to help React efficiently render the list
+          key={post._id} // Use a unique key to help React efficiently render the list
           post={post} // Pass the post data to the PromptCard component
           handleTagClick={handleTagClick} // Pass a callback for handling tag clicks
         />
